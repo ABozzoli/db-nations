@@ -19,6 +19,7 @@ public class Main {
 		
 		try (Connection con = DriverManager.getConnection(url, user, password)) {
 
+			// ricerca che contenga
 			System.out.print("Search: ");
 	        String search = scan.nextLine();
 			
@@ -49,6 +50,7 @@ public class Main {
 				
 			}
 			
+			// ricerca tramite id
 			System.out.print("Choose a country id: ");
 	        int searchId = scan.nextInt();
 	        
@@ -69,13 +71,17 @@ public class Main {
 				try (ResultSet rs = ps.executeQuery()) {
 					String languages = "";
 					while (rs.next()) {
-						languages += rs.getString(1) + ", "; // TODO wip virgola
+						languages += rs.getString(1);
+						if (!rs.isLast()) {
+							languages += ", ";
+						}
 					}
 					System.out.println(languages);
 				}
 				
 			}
 			
+			// statistiche più recenti
 			System.out.println("Most recent stats");
 			
 			query = "SELECT `year`, population, gdp\r\n"
@@ -92,7 +98,7 @@ public class Main {
 					while (rs.next()) {
 						System.out.println("Year: " + rs.getInt(1));
 						System.out.println("Population: " + rs.getInt(2));
-						System.out.println("GDP: " + rs.getString(3)); // TODO decimal(15,0)
+						System.out.println("GDP: " + rs.getBigDecimal(3));
 					}
 				}
 				
