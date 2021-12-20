@@ -24,7 +24,7 @@ public class Main {
 			
 	        System.out.format("%3s%45s%33s%18s\n", "ID", "COUNTRY", "REGION", "CONTINENT");
 	        
-			String query = "SELECT n.country_id, n.name AS country_name, r.name AS region_name, c.name AS continent_name\r\n"
+			String query = "SELECT n.country_id, n.name, r.name, c.name\r\n"
 					+ "FROM countries n \r\n"
 					+ "INNER JOIN regions r \r\n"
 					+ "ON n.region_id = r.region_id\r\n"
@@ -67,9 +67,32 @@ public class Main {
 				ps.setInt(1, searchId);
 				
 				try (ResultSet rs = ps.executeQuery()) {
+					String languages = "";
 					while (rs.next()) {
-						String language = rs.getString(1);
-						System.out.print(language + ", "); //TODO togli ultima virgola
+						languages += rs.getString(1) + ", "; // TODO wip virgola
+					}
+					System.out.println(languages);
+				}
+				
+			}
+			
+			System.out.println("Most recent stats");
+			
+			query = "SELECT `year`, population, gdp\r\n"
+					+ "FROM country_stats cs \r\n"
+					+ "WHERE country_id = ?\r\n"
+					+ "ORDER BY `year` DESC\r\n"
+					+ "LIMIT 1;";
+			
+			try (PreparedStatement ps = con.prepareStatement(query)) {
+				
+				ps.setInt(1, searchId);
+				
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						System.out.println("Year: " + rs.getInt(1));
+						System.out.println("Population: " + rs.getInt(2));
+						System.out.println("GDP: " + rs.getString(3)); // TODO decimal(15,0)
 					}
 				}
 				
