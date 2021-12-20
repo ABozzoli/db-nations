@@ -22,6 +22,8 @@ public class Main {
 			System.out.print("Search for: ");
 	        String searchFor = scan.nextLine();
 			
+	        System.out.format("%3s%45s%33s%18s\n", "ID", "COUNTRY", "REGION", "CONTINENT");
+	        
 			String query = "SELECT n.country_id, n.name AS country_name, r.name AS region_name, c.name AS continent_name\r\n"
 					+ "FROM countries n \r\n"
 					+ "INNER JOIN regions r \r\n"
@@ -39,9 +41,9 @@ public class Main {
 					while (rs.next()) {
 						int countryId = rs.getInt(1);
 						String countryName = rs.getString(2);
-						String regionId = rs.getString(3);
-						String continentId = rs.getString(4);
-						System.out.format("%3d%45s%33s%18s\n", countryId, countryName, regionId, continentId);
+						String regionName = rs.getString(3);
+						String continentName = rs.getString(4);
+						System.out.format("%3d%45s%33s%18s\n", countryId, countryName, regionName, continentName);
 					}
 				}
 				
