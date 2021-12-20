@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class Main {
 
@@ -14,17 +15,25 @@ public class Main {
 		String user = "root";
 		String password = "rootpassword";
 
+		Scanner scan = new Scanner(System.in);
+		
 		try (Connection con = DriverManager.getConnection(url, user, password)) {
 
+			System.out.print("Search for: ");
+	        String searchFor = scan.nextLine();
+			
 			String query = "SELECT n.country_id, n.name AS country_name, r.name AS region_name, c.name AS continent_name\r\n"
 					+ "FROM countries n \r\n"
 					+ "INNER JOIN regions r \r\n"
 					+ "ON n.region_id = r.region_id\r\n"
 					+ "INNER JOIN continents c \r\n"
 					+ "ON r.continent_id = c.continent_id\r\n"
+					+ "WHERE n.name LIKE CONCAT('%', ?, '%')\r\n"
 					+ "ORDER BY n.name;";
 			
 			try (PreparedStatement ps = con.prepareStatement(query)) {
+				
+				ps.setString(1, searchFor);
 				
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
@@ -42,6 +51,8 @@ public class Main {
 			System.out.println("OOOPS, si è verificato un errore:");
 			System.out.println(e.getMessage());
 		}
+		
+		scan.close();
 
 	}
 
