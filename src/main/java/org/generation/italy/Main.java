@@ -19,8 +19,8 @@ public class Main {
 		
 		try (Connection con = DriverManager.getConnection(url, user, password)) {
 
-			System.out.print("Search for: ");
-	        String searchFor = scan.nextLine();
+			System.out.print("Search: ");
+	        String search = scan.nextLine();
 			
 	        System.out.format("%3s%45s%33s%18s\n", "ID", "COUNTRY", "REGION", "CONTINENT");
 	        
@@ -35,7 +35,7 @@ public class Main {
 			
 			try (PreparedStatement ps = con.prepareStatement(query)) {
 				
-				ps.setString(1, searchFor);
+				ps.setString(1, search);
 				
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
@@ -44,6 +44,32 @@ public class Main {
 						String regionName = rs.getString(3);
 						String continentName = rs.getString(4);
 						System.out.format("%3d%45s%33s%18s\n", countryId, countryName, regionName, continentName);
+					}
+				}
+				
+			}
+			
+			System.out.print("Choose a country id: ");
+	        int searchId = scan.nextInt();
+	        
+	        System.out.print("Languages: ");
+	        
+	        query = "SELECT `language`\r\n"
+	        		+ "FROM country_languages ponte \r\n"
+	        		+ "INNER JOIN languages l \r\n"
+	        		+ "ON ponte.language_id = l.language_id\r\n"
+	        		+ "INNER JOIN countries c \r\n"
+	        		+ "ON ponte.country_id = c.country_id\r\n"
+	        		+ "WHERE ponte.country_id = ?;";
+	        
+			try (PreparedStatement ps = con.prepareStatement(query)) {
+				
+				ps.setInt(1, searchId);
+				
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						String language = rs.getString(1);
+						System.out.print(language + ", "); //TODO togli ultima virgola
 					}
 				}
 				
